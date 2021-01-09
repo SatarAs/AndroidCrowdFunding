@@ -67,6 +67,7 @@ public class DetailActivity extends AppCompatActivity {
         getDons();
 
     }
+
     private void getDons(){
         String URL = "";
 
@@ -108,8 +109,8 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    int percent = (int)((entity.getTOTAL_AMOUNT() * 100.0f) / Integer.parseInt(editProject.getMontant().toString()));
-                                    Log.d("PERCENT", String.valueOf(percent));
+                                    Integer percent = (int)((entity.getTOTAL_AMOUNT() * 100.0f) / Integer.parseInt(editProject.getMontant()));
+                                    Log.d("PERCENT", "Oui");
                                     String percentD = Integer.toString(percent) + "%";
                                     etAmount.setText(percentD);
                                 }else{

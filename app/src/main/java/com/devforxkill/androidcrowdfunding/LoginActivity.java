@@ -10,6 +10,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.devforxkill.androidcrowdfunding.data.LoginRepository;
+import com.devforxkill.androidcrowdfunding.data.model.LoggedInUser;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -33,7 +35,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 public class LoginActivity extends AppCompatActivity {
-    EditText etUsername;
+    EditText etEmail;
     EditText etPassword;
     Button btnAddCover;
     SharedPreferences sharedPreferences;
@@ -49,7 +51,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        etUsername = (EditText) findViewById(R.id.username2);
+        etEmail = (EditText) findViewById(R.id.email2);
         etPassword = (EditText) findViewById(R.id.password2);
         btnAddCover = (Button) findViewById(R.id.login2);
 
@@ -66,11 +68,11 @@ public class LoginActivity extends AppCompatActivity {
 
 
     private void login(final View view){
-        String username = etUsername.getText().toString();
+        String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
 
 
-        if(StringUtils.isEmpty(username)) return;
+        if(StringUtils.isEmpty(email)) return;
         if(StringUtils.isEmpty(password)) return;
 
         RequestBody requestBody = null;
@@ -79,7 +81,7 @@ public class LoginActivity extends AppCompatActivity {
 
         requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("username", username)
+                .addFormDataPart("email", email)
                 .addFormDataPart("password", password)
                 .build();
         URL = ApiEndPoints.LOGIN;
@@ -117,7 +119,7 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good" +new Gson().toJson(response.body()));
+                Log.d("LOGIN","LOGIN IS GOOD" +new Gson().toJson(response.body()));
                 final Gson gson = new Gson();
                 final APIResponse entity = gson.fromJson(response.body().string(), APIResponse.class);
                 Log.d("APIR",entity.getUser().getEmail());

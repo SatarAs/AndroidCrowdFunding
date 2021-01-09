@@ -113,7 +113,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onItemClick(View view, int position) {
                 final Project project = projectList.get(position);
-                Log.d("MainActivity", "onItemClick: "+ project.getTitle());
+                Log.d("MainActivity", "onItemClick: "+ project);
 
                 // setup the alert builder
                 update(project);
@@ -141,63 +141,6 @@ public class MainActivity extends AppCompatActivity {
         startActivity(intent);
     }
 
-    private void delete(String isbn) {
-        //Buat request body mulipart
-        RequestBody formBody = new FormBody.Builder()
-                .add("isbn", isbn)
-                .build();
-
-        Request request = new Request.Builder()
-                .url(ApiEndPoints.PROJECTS+"/"+isbn+"/delete") //Ingat sesuaikan dengan URL
-                .post(formBody)
-                .build();
-
-        //Handle response dari request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, final IOException e) {
-                MainActivity.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-
-                        Log.d("Main Activity", e.getMessage());
-                        Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        //Finish activity
-                        MainActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                APIResponse res =  gson.fromJson(response.body().charStream(), APIResponse.class);
-                                if(StringUtils.equals(res.getStatus(), "success")){
-                                    //Refresh book
-                                    getBooks();
-                                }
-                            }
-                        });
-                    } catch (JsonSyntaxException e) {
-                        Log.e("MainActivity", "JSON Errors:"+e.getMessage());
-                    } finally {
-                        response.body().close();
-                    }
-
-                } else {
-                    MainActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(MainActivity.this, "Server error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
 
     /**
      * Get Book from REST-API and populate into RecycleView
@@ -217,7 +160,7 @@ public class MainActivity extends AppCompatActivity {
                         Log.d("OFF","OFFILE");
                         projectList = new Gson().<ArrayList<Project>>fromJson(PreferenceManager.getDefaultSharedPreferences(getBaseContext()).getString("My_SAVED_LIST", ""), new TypeToken<ArrayList<Project>>() {
                         }.getType());
-                        Log.d("Main Activitye", e.getMessage());
+                        Log.d("Main Activity", e.getMessage());
                         Toast.makeText(MainActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });

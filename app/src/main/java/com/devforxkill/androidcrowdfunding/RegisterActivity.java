@@ -1,5 +1,6 @@
 package com.devforxkill.androidcrowdfunding;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -8,6 +9,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.devforxkill.androidcrowdfunding.Models.User;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -29,10 +31,10 @@ import okhttp3.Response;
 
 
 public class RegisterActivity extends AppCompatActivity {
-    EditText etUsername;
+    EditText etEmail;
     EditText etPseudo;
     EditText etPassword;
-    EditText etBirthday;
+    EditText etBirthdate;
     Button btnAddCover;
 
     OkHttpClient client = new OkHttpClient.Builder()
@@ -46,9 +48,9 @@ public class RegisterActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
         etPseudo = (EditText) findViewById(R.id.pseudo);
-        etUsername = (EditText) findViewById(R.id.username);
+        etEmail = (EditText) findViewById(R.id.email);
         etPassword = (EditText) findViewById(R.id.password);
-        etBirthday = (EditText) findViewById(R.id.birthday);
+        etBirthdate = (EditText) findViewById(R.id.birthdate);
         btnAddCover = (Button) findViewById(R.id.login);
 
         btnAddCover.setOnClickListener(new View.OnClickListener() {
@@ -62,17 +64,17 @@ public class RegisterActivity extends AppCompatActivity {
     }
 
     private void register(){
-        String username = etUsername.getText().toString();
+        String email = etEmail.getText().toString();
         String pseudo = etPseudo.getText().toString();
         String password = etPassword.getText().toString();
-        String birthday = etBirthday.getText().toString();
+        String birthdate = etBirthdate.getText().toString();
 
-        Log.d("TESTE", username + pseudo + password + birthday);
+        Log.d("TESTE", email + pseudo + password + birthdate);
 
-       if(StringUtils.isEmpty(username)) return;
+        if(StringUtils.isEmpty(email)) return;
         if(StringUtils.isEmpty(pseudo)) return;
         if(StringUtils.isEmpty(password)) return;
-        if(StringUtils.isEmpty(birthday)) return;
+        if(StringUtils.isEmpty(birthdate)) return;
 
         RequestBody requestBody = null;
         String URL = "";
@@ -80,20 +82,22 @@ public class RegisterActivity extends AppCompatActivity {
 
             requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
-                    .addFormDataPart("username", username)
+                    .addFormDataPart("email", email)
                     .addFormDataPart("pseudo", pseudo)
                     .addFormDataPart("password", password)
-                    .addFormDataPart("birthday", birthday)
+                    .addFormDataPart("birthdate", birthdate)
                     .build();
             URL = ApiEndPoints.REGISTER;
 
 
         Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
+                .url(URL)
                 .post(requestBody)
                 .build();
 
-        //Handle response dari request
+        Intent i = new Intent(this,LoginActivity.class);
+        startActivity(i);
+
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -112,33 +116,8 @@ public class RegisterActivity extends AppCompatActivity {
                 Log.d("Good","Good");
 
                 if (response.isSuccessful()) {
-                    try {
-                        RegisterActivity.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                APIResponse res =  gson.fromJson(response.body().charStream(), APIResponse.class);
-                                if(StringUtils.equals(res.getStatus(), "success")){
-                                    Toast.makeText(RegisterActivity.this, "Inscription réussi ! ", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }else{
-                                    Toast.makeText(RegisterActivity.this, "Error: "+res.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    } catch (JsonSyntaxException e) {
-
-                        Log.e("MainActivity", "JSON Errors:"+e.getMessage());
-                    } finally {
-                        response.body().close();
-                    }
-
-                } else {
-                    RegisterActivity.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(RegisterActivity.this, "Server error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
+                    String result= response.body().string();
+                    Log.d("Good", result);
                 }
             }
         });

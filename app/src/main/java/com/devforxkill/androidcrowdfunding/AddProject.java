@@ -1,9 +1,12 @@
 package com.devforxkill.androidcrowdfunding;
 
 import android.Manifest;
+import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -16,6 +19,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
+import com.devforxkill.androidcrowdfunding.data.model.LoggedInUser;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -65,6 +69,7 @@ public class AddProject extends AppCompatActivity {
     int MODE = 1;
 
     Project editProject;
+    SharedPreferences sharedPreferences;
 
     ImagePicker imagePicker;
     CameraImagePicker cameraImagePicker;
@@ -82,6 +87,7 @@ public class AddProject extends AppCompatActivity {
     TextInputEditText etEnd_Date;
     @BindView(R.id.etDescription)
     TextInputEditText etDescription;
+    @BindView(R.id.save) Button save;
 
     OkHttpClient client = new OkHttpClient.Builder()
             .addNetworkInterceptor(new StethoInterceptor())
@@ -127,10 +133,16 @@ public class AddProject extends AppCompatActivity {
                 pickImageChoice();
             }
         });
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                addProject();
+            }
+        });
 
         //beri nilai di form input agar lebih mudah
         if(getIntent().getParcelableExtra("book") != null){
-            editProject = (Project) getIntent().getParcelableExtra("book");
+            editProject = getIntent().getParcelableExtra("book");
             MODE = EDIT_MODE;
             etTitle.setText(editProject.getTitle());
             etMontant.setText(editProject.getEndDate());
@@ -138,18 +150,69 @@ public class AddProject extends AppCompatActivity {
             Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(imageView);
             Log.d(TAG, "onCreate: "+ApiEndPoints.BASE + editProject.getPicture());
 
-        }else{
-            MODE = ADD_MODE;
-
-            //Set default isi form
-            etTitle.setText("21212121");
-            etMontant.setText("3");
-            etEnd_Date.setText("2018");
-            etDescription.setText("Build Android application in no time with without reinventing +" +
-                    "the wheels, by using various existing Android Library. Great book for lazy people");
         }
     }
 
+    private void addProject(){
+        Log.d(TAG, "addProject: TEST ADD");
+        String title = etTitle.getText().toString();
+        String montant = etMontant.getText().toString();
+        String end_date = etEnd_Date.getText().toString();
+        String description = etDescription.getText().toString();
+        //String picture = imagePath;
+
+        if(StringUtils.isEmpty(title)) return;
+        if(StringUtils.isEmpty(montant)) return;
+        if(StringUtils.isEmpty(end_date)) return;
+
+        RequestBody requestBody = null;
+        String URL = "";
+        sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
+
+        requestBody = new MultipartBody.Builder()
+                .setType(MultipartBody.FORM)
+                .addFormDataPart("idUser", "1" )
+                .addFormDataPart("title", title)
+                .addFormDataPart("montant", montant)
+                .addFormDataPart("end_date", end_date)
+                .addFormDataPart("description", description)
+                //.addFormDataPart("picture", picture)
+                .build();
+        URL = ApiEndPoints.ADD_PROJECT;
+
+
+        Request request = new Request.Builder()
+                .url(URL)
+                .post(requestBody)
+                .build();
+
+        Intent i = new Intent(this,MainActivity.class);
+        startActivity(i);
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                Log.d("Error","Error");
+                AddProject.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("Main Activity", e.getMessage());
+                        Toast.makeText(AddProject.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                Log.d("Good","Good");
+
+                if (response.isSuccessful()) {
+                    String result= response.body().string();
+                    Log.d("Good", result);
+                }
+            }
+        });
+    }
     /**
      * Method untuk mengambil gambar ketika tombol Thumbnail di click
      */

@@ -8,7 +8,7 @@
     tools:context=".RegisterActivity">
 
   <EditText
-      android:id="@+id/username"
+      android:id="@+id/email"
       android:layout_width="0dp"
       android:layout_height="wrap_content"
       android:layout_marginStart="24dp"
@@ -51,26 +51,26 @@
       android:hint="@string/prompt_password"
       android:inputType="textPassword"
       android:selectAllOnFocus="true"
-      app:layout_constraintBottom_toTopOf="@+id/birthday"
+      app:layout_constraintBottom_toTopOf="@+id/birthdate"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.48"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent" />
 
   <EditText
-      android:id="@+id/birthday"
+      android:id="@+id/birthdate"
       android:layout_width="0dp"
       android:layout_height="45dp"
       android:layout_marginStart="24dp"
       android:layout_marginTop="360dp"
       android:layout_marginEnd="24dp"
       android:layout_marginBottom="64dp"
-      android:hint="Birthday"
+      android:hint="Birthdate"
       android:inputType="date"
       android:selectAllOnFocus="true"
       app:layout_constraintBottom_toTopOf="@+id/login"
       app:layout_constraintEnd_toEndOf="parent"
-      app:layout_constraintHorizontal_bias="0.68"
+      app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
       app:layout_constraintTop_toTopOf="parent"
       app:layout_constraintVertical_bias="0.36" />
@@ -85,12 +85,12 @@
       android:layout_marginEnd="162dp"
       android:layout_marginRight="162dp"
       android:layout_marginBottom="282dp"
-      android:text="Button"
+      android:text="Register"
       app:layout_constraintBottom_toBottomOf="parent"
       app:layout_constraintEnd_toEndOf="parent"
       app:layout_constraintHorizontal_bias="0.0"
       app:layout_constraintStart_toStartOf="parent"
-      app:layout_constraintTop_toBottomOf="@+id/birthday"
+      app:layout_constraintTop_toBottomOf="@+id/birthdate"
       app:layout_constraintVertical_bias="1.0" />
 
   <android.support.v7.widget.Toolbar
