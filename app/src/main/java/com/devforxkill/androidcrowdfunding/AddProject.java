@@ -1,12 +1,10 @@
 package com.devforxkill.androidcrowdfunding;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,7 +17,6 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.devforxkill.androidcrowdfunding.data.model.LoggedInUser;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -41,7 +38,6 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.devforxkill.androidcrowdfunding.Adapter.*;
 import com.devforxkill.androidcrowdfunding.Config.ApiEndPoints;
 import com.devforxkill.androidcrowdfunding.Models.APIResponse;
 import com.devforxkill.androidcrowdfunding.Models.Project;
@@ -58,7 +54,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Activity untuk menambahkan dan mengupdate data buku
+ * Activity pour l'ajout d'un nouveau projet
  */
 public class AddProject extends AppCompatActivity {
 
@@ -115,10 +111,9 @@ public class AddProject extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_book);
-        ButterKnife.bind(this); //Bind ButterKnife
+        setContentView(R.layout.activity_add_project);
+        ButterKnife.bind(this);
 
-        //inisiaisasi ImagePicker dan CameraImagePicker
         imagePicker = new ImagePicker(AddProject.this);
         cameraImagePicker = new CameraImagePicker(AddProject.this);
 
@@ -126,7 +121,6 @@ public class AddProject extends AppCompatActivity {
         imagePicker.setImagePickerCallback(callback);
         cameraImagePicker.setImagePickerCallback(callback);
 
-        //beri action pada tombol thumbnail
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,7 +134,6 @@ public class AddProject extends AppCompatActivity {
             }
         });
 
-        //beri nilai di form input agar lebih mudah
         if(getIntent().getParcelableExtra("book") != null){
             editProject = getIntent().getParcelableExtra("book");
             MODE = EDIT_MODE;
@@ -153,7 +146,7 @@ public class AddProject extends AppCompatActivity {
         }
     }
 
-    private void addProject(){
+    private void addProject() {
         Log.d(TAG, "addProject: TEST ADD");
         String title = etTitle.getText().toString();
         String montant = etMontant.getText().toString();
@@ -161,16 +154,16 @@ public class AddProject extends AppCompatActivity {
         String description = etDescription.getText().toString();
         //String picture = imagePath;
 
-        if(StringUtils.isEmpty(title)) return;
-        if(StringUtils.isEmpty(montant)) return;
-        if(StringUtils.isEmpty(end_date)) return;
+        if (StringUtils.isEmpty(title)) return;
+        if (StringUtils.isEmpty(montant)) return;
+        if (StringUtils.isEmpty(end_date)) return;
 
         RequestBody requestBody = null;
         String URL = "";
         sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
         requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("idUser", "1" )
+                .addFormDataPart("idUser", "1")
                 .addFormDataPart("title", title)
                 .addFormDataPart("montant", montant)
                 .addFormDataPart("end_date", end_date)
@@ -185,13 +178,13 @@ public class AddProject extends AppCompatActivity {
                 .post(requestBody)
                 .build();
 
-        Intent i = new Intent(this,MainActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                Log.d("Error","Error");
+                Log.d("Error", "Error");
                 AddProject.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -203,21 +196,17 @@ public class AddProject extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good");
+                Log.d("Good", "Good");
 
                 if (response.isSuccessful()) {
-                    String result= response.body().string();
+                    String result = response.body().string();
                     Log.d("Good", result);
                 }
             }
         });
     }
-    /**
-     * Method untuk mengambil gambar ketika tombol Thumbnail di click
-     */
+
     private void pickImageChoice(){
-        //Pertama, minta permission untuk mengakses camera dan storage (untuk Android M ke atas)
-        //Biar gampang, kita pakai library namanya Dexter.
         //https://github.com/Karumi/Dexter
 
         Dexter.withActivity(this)
@@ -225,8 +214,6 @@ public class AddProject extends AppCompatActivity {
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
-                    //Jika permission diijinkan user, buat dialog pilihan
-                    //untuk memilih gambar diambil dari gallery atau camera
 
                     // setup the alert builder
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddProject.this);
@@ -238,10 +225,10 @@ public class AddProject extends AppCompatActivity {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                                case 0: // dari gallery
+                                case 0:
                                     imagePicker.pickImage();
                                     break;
-                                case 1: // dari camera
+                                case 1:
                                     imagePath = cameraImagePicker.pickImage();
                                     break;
                             }
@@ -260,7 +247,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * onActivityResult untuk menghandle data yang diambil dari camera atau gallery
+     * onActivityResult
      * @param requestCode
      * @param resultCode
      * @param data
@@ -289,7 +276,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Jangan lupa handle reference path gambar agar tidak hilang saat activity restart
+     * onSaveInstanceState
      * @param outState
      */
     @Override
@@ -313,7 +300,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Buat menu SIMPAN di pojok kanan atas
+     * onCreateOptionsMenu
      * @param menu
      * @return
      */
@@ -325,7 +312,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Handle menu, ketika diklik, panggil method save()
+     * onOptionsItemSelected
      * @param item
      * @return
      */
@@ -334,7 +321,7 @@ public class AddProject extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.save:
-                saveBook();
+                saveProject();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -344,29 +331,23 @@ public class AddProject extends AppCompatActivity {
     /**
      * Save data buku ketika user mengklik menu SAVE
      */
-    private void saveBook(){
-        //Get nilai edit text, assign ke variabel
+    private void saveProject(){
         String title = etTitle.getText().toString();
         String montant = etMontant.getText().toString();
         String end_date = etEnd_Date.getText().toString();
         String description = etDescription.getText().toString();
 
-        //Tambahkan sedikit validasi, jangan simpan jika edit text masih kosong
         if(StringUtils.isEmpty(title)) return;
         if(StringUtils.isEmpty(montant)) return;
         if(StringUtils.isEmpty(end_date)) return;
         if(StringUtils.isEmpty(description)) return;
 
-        //Sesuaikan parameter input. Jika edit mode, gambar tidak harus diisi
-        //Sesuaikan juga URL dari API yang digunakan
         RequestBody requestBody = null;
         String URL = "";
 
         if(MODE == ADD_MODE){
-            //tambahkan validasi pada gambar jika mode tambah
             if(StringUtils.isEmpty(imagePath)) return;
 
-            //Buat parameter input form
             requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("title", title)
@@ -380,7 +361,6 @@ public class AddProject extends AppCompatActivity {
 
         }else if(MODE == EDIT_MODE) {
             if(StringUtils.isBlank(imageFileName)){
-                //Buat parameter input form
                 requestBody = new MultipartBody.Builder()
                         .setType(MultipartBody.FORM)
                         .addFormDataPart("title", title)
@@ -407,7 +387,6 @@ public class AddProject extends AppCompatActivity {
                 .post(requestBody)
                 .build();
 
-        //Handle response dari request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
@@ -429,12 +408,10 @@ public class AddProject extends AppCompatActivity {
                             @Override
                             public void run() {
                                 APIResponse res =  gson.fromJson(response.body().charStream(), APIResponse.class);
-                                //Jika response success, finish activity
                                 if(StringUtils.equals(res.getStatus(), "success")){
                                     Toast.makeText(AddProject.this, "Book saved!", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }else{
-                                    //Tampilkan error jika ada
                                     Toast.makeText(AddProject.this, "Error: "+res.getMessage(), Toast.LENGTH_SHORT).show();
                                 }
                             }

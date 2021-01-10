@@ -36,6 +36,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Activity pour la connexion d'un utilisateur
+ */
 public class LoginActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPassword;
@@ -89,11 +92,10 @@ public class LoginActivity extends AppCompatActivity {
 
 
         Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
+                .url(URL)
                 .post(requestBody)
                 .build();
 
-        //Handle response dari request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {

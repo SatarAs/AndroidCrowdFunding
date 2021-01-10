@@ -32,6 +32,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
+/**
+ * Activity pour l'ajout d'un don à un projet
+ */
 public class DonActivity extends AppCompatActivity {
     private static final String PREFS = "PREFS";
     private static final String PREFS_AGE = "PREFS_AGE";
@@ -99,11 +102,10 @@ public class DonActivity extends AppCompatActivity {
             URL = ApiEndPoints.DONS;
 
         Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
+                .url(URL)
                 .post(requestBody)
                 .build();
 
-        //Handle response dari request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {

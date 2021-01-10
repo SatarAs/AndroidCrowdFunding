@@ -29,7 +29,9 @@ import okhttp3.Request;
 import okhttp3.RequestBody;
 import okhttp3.Response;
 
-
+/**
+ * Activity pour l'inscription d'un nouvel utilisateur
+ */
 public class RegisterActivity extends AppCompatActivity {
     EditText etEmail;
     EditText etPseudo;

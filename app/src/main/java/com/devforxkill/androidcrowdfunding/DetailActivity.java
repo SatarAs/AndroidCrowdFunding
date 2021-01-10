@@ -33,6 +33,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+/**
+ * Activity pour l'affichage des détails d'un projet
+ */
 public class DetailActivity extends AppCompatActivity {
     Project editProject;
     TextView etTitle;
@@ -53,7 +56,7 @@ public class DetailActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.description);
         etButton =  findViewById(R.id.don);
         etImage =  findViewById(R.id.imageP);
-        editProject =  getIntent().getParcelableExtra("book");
+        editProject =  getIntent().getParcelableExtra("project");
 
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
@@ -78,11 +81,10 @@ public class DetailActivity extends AppCompatActivity {
 
 
         Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
+                .url(URL)
                 .get()
                 .build();
 
-        //Handle response dari request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
