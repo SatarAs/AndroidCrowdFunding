@@ -168,7 +168,6 @@ public class AddProject extends AppCompatActivity {
         RequestBody requestBody = null;
         String URL = "";
         sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
-
         requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
                 .addFormDataPart("idUser", "1" )

@@ -1,5 +1,6 @@
 package com.devforxkill.androidcrowdfunding;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -10,6 +11,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.devforxkill.androidcrowdfunding.Models.User;
 import com.devforxkill.androidcrowdfunding.data.LoginRepository;
 import com.devforxkill.androidcrowdfunding.data.model.LoggedInUser;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
@@ -41,7 +43,7 @@ public class LoginActivity extends AppCompatActivity {
     SharedPreferences sharedPreferences;
 
     private static final String PREFS_AGE = "PREFS_AGE";
-    private static final String PREFS_NAME = "PREFS_NAME";
+    private static final String PREFS_ID = "PREFS_ID";
 
     OkHttpClient client = new OkHttpClient.Builder()
             .addNetworkInterceptor(new StethoInterceptor())
@@ -70,7 +72,6 @@ public class LoginActivity extends AppCompatActivity {
     private void login(final View view){
         String email = etEmail.getText().toString();
         String password = etPassword.getText().toString();
-
 
         if(StringUtils.isEmpty(email)) return;
         if(StringUtils.isEmpty(password)) return;
@@ -103,16 +104,7 @@ public class LoginActivity extends AppCompatActivity {
                     public void run() {
                         Log.d("Main Activity", e.getMessage());
                         Toast.makeText(LoginActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                        sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
 
-                        sharedPreferences
-                                .edit()
-                                .putBoolean(PREFS_AGE, false)
-                                .putString(PREFS_NAME, "florent")
-                                .apply();
-                        Intent show = new Intent(view.getContext(), MainActivity.class);
-
-                        startActivity(show);
                     }
                 });
             }
@@ -137,7 +129,7 @@ public class LoginActivity extends AppCompatActivity {
                                     sharedPreferences
                                             .edit()
                                             .putBoolean(PREFS_AGE, true)
-                                            .putString(PREFS_NAME, entity.getUser().getId())
+                                            .putString(PREFS_ID, entity.getUser().getId())
                                             .apply();
                                     Intent show = new Intent(view.getContext(), MainActivity.class);
 

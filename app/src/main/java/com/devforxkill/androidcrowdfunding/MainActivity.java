@@ -21,6 +21,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.devforxkill.androidcrowdfunding.data.LoginDataSource;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -50,7 +51,7 @@ import static android.support.v7.widget.RecyclerView.VERTICAL;
 public class MainActivity extends AppCompatActivity {
     private static final String PREFS = "PREFS";
     private static final String PREFS_AGE = "PREFS_AGE";
-    private static final String PREFS_NAME = "PREFS_NAME";
+    private static final String PREFS_ID = "PREFS_ID";
     RecyclerView recyclerView;
     ProjectsAdapter recycleAdapter;
     OkHttpClient client = new OkHttpClient.Builder()
@@ -70,11 +71,11 @@ public class MainActivity extends AppCompatActivity {
         Log.d("TESTT","TESTCO");
         sharedPreferences = getBaseContext().getSharedPreferences(PREFS, MODE_PRIVATE);
 
-
-        if (sharedPreferences.contains(PREFS_AGE) && sharedPreferences.contains(PREFS_NAME)) {
+        Log.d("PREFS_ID", sharedPreferences.getString(PREFS_ID,""));
+        if (sharedPreferences.contains(PREFS_AGE) && sharedPreferences.contains(PREFS_ID)) {
 
             boolean age = sharedPreferences.getBoolean(PREFS_AGE, false);
-            String name = sharedPreferences.getString(PREFS_NAME, null);
+            String name = sharedPreferences.getString(PREFS_ID, null);
             Log.d("Storage", name);
 
 

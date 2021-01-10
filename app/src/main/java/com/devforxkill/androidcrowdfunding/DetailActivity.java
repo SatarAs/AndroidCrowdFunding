@@ -2,10 +2,12 @@ package com.devforxkill.androidcrowdfunding;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -24,6 +26,7 @@ import com.devforxkill.androidcrowdfunding.Models.APIResponse;
 import com.devforxkill.androidcrowdfunding.Models.Project;
 import com.devforxkill.androidcrowdfunding.Models.AmountDon;
 
+import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -45,12 +48,12 @@ public class DetailActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
 
-        etTitle = (TextView) findViewById(R.id.title);
-        etAmount = (TextView) findViewById(R.id.amount);
-        etDescription = (TextView) findViewById(R.id.description);
-        etButton = (Button) findViewById(R.id.don);
-        etImage = (ImageView) findViewById(R.id.imageP);
-        editProject = (Project) getIntent().getParcelableExtra("book");
+        etTitle = findViewById(R.id.title);
+        etAmount = findViewById(R.id.amount);
+        etDescription = findViewById(R.id.description);
+        etButton =  findViewById(R.id.don);
+        etImage =  findViewById(R.id.imageP);
+        editProject =  getIntent().getParcelableExtra("book");
 
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
@@ -101,7 +104,7 @@ public class DetailActivity extends AppCompatActivity {
                 final Gson gson = new Gson();
                 final AmountDon entity = gson.fromJson(response.body().string(), AmountDon.class);
 
-                Log.d("APIR", String.valueOf(entity.getTOTAL_AMOUNT()));
+                //Log.d("APIR", String.valueOf(entity.getTOTAL_AMOUNT()));
 
                 if (response.isSuccessful()) {
                     try {
@@ -109,10 +112,10 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    Integer percent = (int)((entity.getTOTAL_AMOUNT() * 100.0f) / Integer.parseInt(editProject.getMontant()));
+                                    /*Integer percent = (int)((entity.getTOTAL_AMOUNT() * 100.0f) / Integer.parseInt(editProject.getMontant()));
                                     Log.d("PERCENT", "Oui");
                                     String percentD = Integer.toString(percent) + "%";
-                                    etAmount.setText(percentD);
+                                    etAmount.setText(percentD);*/
                                 }else{
 
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();

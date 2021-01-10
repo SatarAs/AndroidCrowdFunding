@@ -35,7 +35,7 @@ import okhttp3.Response;
 public class DonActivity extends AppCompatActivity {
     private static final String PREFS = "PREFS";
     private static final String PREFS_AGE = "PREFS_AGE";
-    private static final String PREFS_NAME = "PREFS_NAME";
+    private static final String PREFS_ID = "PREFS_ID";
     private static final String PREFS_PROJECT = "PREFS_PROJECT";
     @BindView(R.id.button2)
     Button btnAddCover;
@@ -60,9 +60,9 @@ public class DonActivity extends AppCompatActivity {
         etAmount = (EditText) findViewById(R.id.amount);
 
 
-        if (sharedPreferences.contains(PREFS_NAME)) {
+        if (sharedPreferences.contains(PREFS_ID)) {
 
-            id = sharedPreferences.getString(PREFS_NAME, null);
+            id = sharedPreferences.getString(PREFS_ID, null);
             Log.d("StorageDON", id);
 
 
@@ -93,8 +93,8 @@ public class DonActivity extends AppCompatActivity {
             requestBody = new MultipartBody.Builder()
                     .setType(MultipartBody.FORM)
                     .addFormDataPart("montant", amount)
-                    .addFormDataPart("user_id", id)
-                    .addFormDataPart("project_id", editProject.getId())
+                    .addFormDataPart("idUser", id)
+                    .addFormDataPart("idProject", editProject.getId())
                     .build();
             URL = ApiEndPoints.DONS;
 
