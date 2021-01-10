@@ -41,7 +41,7 @@ import okhttp3.Response;
  */
 public class DetailActivity extends AppCompatActivity {
     Project editProject;
-    @BindView(R.id.title) TextView etTitle;
+    TextView etTitle;
     TextView etAmount;
     TextView etDescription;
     TextView etTotal;
@@ -174,11 +174,9 @@ public class DetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good" +new Gson().toJson(response.body()));
                 final Gson gson = new Gson();
                 assert response.body() != null;
                 final AmountDon entity = gson.fromJson(response.body().string(), AmountDon.class);
-                Log.d("APIR", String.valueOf(entity.getTOTAL_AMOUNT()));
 
                 if (response.isSuccessful()) {
                     try {
@@ -186,9 +184,8 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    Integer percent = (int)((entity.getTOTAL_AMOUNT()));
-                                    Log.d("PERCENT", percent.toString());
-                                    etTotal.setText(percent.toString());
+                                    Integer montantTotal = (int)((entity.getTOTAL_AMOUNT()));
+                                    etTotal.setText(montantTotal.toString());
                                 }else{
 
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
