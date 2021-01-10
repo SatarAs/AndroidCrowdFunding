@@ -19,9 +19,11 @@ import android.util.Log;
 import android.view.View;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.devforxkill.androidcrowdfunding.data.LoginDataSource;
+import com.devforxkill.androidcrowdfunding.data.LoginRepository;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
@@ -61,6 +63,7 @@ public class MainActivity extends AppCompatActivity {
     Gson gson = new Gson();
     SharedPreferences sharedPreferences;
     FloatingActionButton buttonAction;
+    Button logout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

@@ -27,6 +27,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
         public TextView title;
         public TextView description;
         public ImageView thumbnail;
+        public TextView montant;
 
         public ViewHolder(View itemView) {
             super(itemView);
@@ -34,6 +35,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
             title = (TextView) itemView.findViewById(R.id.tvTitle);
             description = (TextView) itemView.findViewById(R.id.tvDescription);
             thumbnail = (ImageView) itemView.findViewById(R.id.imageView);
+            montant = (TextView) itemView.findViewById(R.id.tvMontant);
         }
     }
 
@@ -66,6 +68,7 @@ public class ProjectsAdapter extends RecyclerView.Adapter<ProjectsAdapter.ViewHo
         Log.d("test",m.getDescription().toString());
         holder.title.setText(m.getTitle());
         holder.description.setText(m.getDescription());
+        holder.montant.setText("Objectif : " + m.getMontant() + " €");
         Picasso.get().load(ApiEndPoints.BASE + m.getPicture()).into(holder.thumbnail);
     }
 

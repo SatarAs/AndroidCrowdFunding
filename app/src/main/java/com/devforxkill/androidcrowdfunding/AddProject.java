@@ -1,12 +1,10 @@
 package com.devforxkill.androidcrowdfunding;
 
 import android.Manifest;
-import android.content.ActivityNotFoundException;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -19,10 +17,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Toast;
 
-import com.devforxkill.androidcrowdfunding.data.model.LoggedInUser;
 import com.facebook.stetho.okhttp3.StethoInterceptor;
 import com.google.gson.Gson;
-import com.google.gson.JsonSyntaxException;
 import com.karumi.dexter.Dexter;
 import com.karumi.dexter.MultiplePermissionsReport;
 import com.karumi.dexter.PermissionToken;
@@ -41,9 +37,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
-import com.devforxkill.androidcrowdfunding.Adapter.*;
 import com.devforxkill.androidcrowdfunding.Config.ApiEndPoints;
-import com.devforxkill.androidcrowdfunding.Models.APIResponse;
 import com.devforxkill.androidcrowdfunding.Models.Project;
 
 import butterknife.BindView;
@@ -66,10 +60,12 @@ public class AddProject extends AppCompatActivity {
     String imageFileName;
     private static int EDIT_MODE = 0;
     private static int ADD_MODE = 1;
+    private static final String PREFS_ID = "PREFS_ID";
     int MODE = 1;
 
     Project editProject;
     SharedPreferences sharedPreferences;
+    String id ;
 
     ImagePicker imagePicker;
     CameraImagePicker cameraImagePicker;
@@ -115,18 +111,18 @@ public class AddProject extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_book);
+        setContentView(R.layout.activity_add_project);
         ButterKnife.bind(this); //Bind ButterKnife
 
-        //inisiaisasi ImagePicker dan CameraImagePicker
+
         imagePicker = new ImagePicker(AddProject.this);
         cameraImagePicker = new CameraImagePicker(AddProject.this);
 
-        //set callback handler
+
         imagePicker.setImagePickerCallback(callback);
         cameraImagePicker.setImagePickerCallback(callback);
 
-        //beri action pada tombol thumbnail
+
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -140,7 +136,7 @@ public class AddProject extends AppCompatActivity {
             }
         });
 
-        //beri nilai di form input agar lebih mudah
+
         if(getIntent().getParcelableExtra("book") != null){
             editProject = getIntent().getParcelableExtra("book");
             MODE = EDIT_MODE;
@@ -148,7 +144,6 @@ public class AddProject extends AppCompatActivity {
             etMontant.setText(editProject.getEndDate());
             etEnd_Date.setText(editProject.getMontant());
             Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(imageView);
-            Log.d(TAG, "onCreate: "+ApiEndPoints.BASE + editProject.getPicture());
 
         }
     }
@@ -159,7 +154,7 @@ public class AddProject extends AppCompatActivity {
         String montant = etMontant.getText().toString();
         String end_date = etEnd_Date.getText().toString();
         String description = etDescription.getText().toString();
-        //String picture = imagePath;
+        //String picture = imageView.toString();
 
         if(StringUtils.isEmpty(title)) return;
         if(StringUtils.isEmpty(montant)) return;
@@ -168,14 +163,22 @@ public class AddProject extends AppCompatActivity {
         RequestBody requestBody = null;
         String URL = "";
         sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
+
+        if (sharedPreferences.contains(PREFS_ID)) {
+
+            id = sharedPreferences.getString(PREFS_ID, null);
+            Log.d("UserID", id);
+
+        }
         requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)
-                .addFormDataPart("idUser", "1" )
+                .addFormDataPart("idUser", id )
                 .addFormDataPart("title", title)
                 .addFormDataPart("montant", montant)
                 .addFormDataPart("end_date", end_date)
                 .addFormDataPart("description", description)
-                //.addFormDataPart("picture", picture)
+                .addFormDataPart("image", imageFileName,
+                        RequestBody.create(MEDIA_TYPE_PNG, new File(imagePath)))
                 .build();
         URL = ApiEndPoints.ADD_PROJECT;
 
@@ -212,42 +215,31 @@ public class AddProject extends AppCompatActivity {
             }
         });
     }
-    /**
-     * Method untuk mengambil gambar ketika tombol Thumbnail di click
-     */
+
     private void pickImageChoice(){
-        //Pertama, minta permission untuk mengakses camera dan storage (untuk Android M ke atas)
-        //Biar gampang, kita pakai library namanya Dexter.
-        //https://github.com/Karumi/Dexter
 
         Dexter.withActivity(this)
             .withPermissions(Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             .withListener(new MultiplePermissionsListener() {
                 @Override
                 public void onPermissionsChecked(MultiplePermissionsReport report) {
-                    //Jika permission diijinkan user, buat dialog pilihan
-                    //untuk memilih gambar diambil dari gallery atau camera
-
-                    // setup the alert builder
                     AlertDialog.Builder builder = new AlertDialog.Builder(AddProject.this);
                     builder.setTitle("Pick image from?");
 
-                    // add a list
                     String[] menus = {"Gallery", "Camera"};
                     builder.setItems(menus, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
                             switch (which) {
-                                case 0: // dari gallery
+                                case 0:
                                     imagePicker.pickImage();
                                     break;
-                                case 1: // dari camera
+                                case 1:
                                     imagePath = cameraImagePicker.pickImage();
                                     break;
                             }
                         }
                     });
-                    // create and show the alert dialog
                     AlertDialog dialog = builder.create();
                     dialog.show();
                 }
@@ -279,8 +271,6 @@ public class AddProject extends AppCompatActivity {
                 if(cameraImagePicker == null) {
                     cameraImagePicker = new CameraImagePicker(AddProject.this);
                     cameraImagePicker.reinitialize(imagePath);
-                    // OR in one statement
-                    // imagePicker = new CameraImagePicker(Activity.this, outputPath);
                     cameraImagePicker.setImagePickerCallback(callback);
                 }
                 cameraImagePicker.submit(data);
@@ -294,16 +284,12 @@ public class AddProject extends AppCompatActivity {
      */
     @Override
     protected void onSaveInstanceState(Bundle outState) {
-        // You have to save path in case your activity is killed.
-        // In such a scenario, you will need to re-initialize the CameraImagePicker
         outState.putString("picker_path", imagePath);
         super.onSaveInstanceState(outState);
     }
 
     @Override
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
-        // After Activity recreate, you need to re-initialize these
-        // two values to be able to re-initialize CameraImagePicker
         if (savedInstanceState != null) {
             if (savedInstanceState.containsKey("picker_path")) {
                 imagePath = savedInstanceState.getString("picker_path");
@@ -334,126 +320,11 @@ public class AddProject extends AppCompatActivity {
         // Handle item selection
         switch (item.getItemId()) {
             case R.id.save:
-                saveBook();
+                addProject();
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    /**
-     * Save data buku ketika user mengklik menu SAVE
-     */
-    private void saveBook(){
-        //Get nilai edit text, assign ke variabel
-        String title = etTitle.getText().toString();
-        String montant = etMontant.getText().toString();
-        String end_date = etEnd_Date.getText().toString();
-        String description = etDescription.getText().toString();
-
-        //Tambahkan sedikit validasi, jangan simpan jika edit text masih kosong
-        if(StringUtils.isEmpty(title)) return;
-        if(StringUtils.isEmpty(montant)) return;
-        if(StringUtils.isEmpty(end_date)) return;
-        if(StringUtils.isEmpty(description)) return;
-
-        //Sesuaikan parameter input. Jika edit mode, gambar tidak harus diisi
-        //Sesuaikan juga URL dari API yang digunakan
-        RequestBody requestBody = null;
-        String URL = "";
-
-        if(MODE == ADD_MODE){
-            //tambahkan validasi pada gambar jika mode tambah
-            if(StringUtils.isEmpty(imagePath)) return;
-
-            //Buat parameter input form
-            requestBody = new MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart("title", title)
-                    .addFormDataPart("montant", montant)
-                    .addFormDataPart("end_date", end_date)
-                    .addFormDataPart("description", description)
-                    .addFormDataPart("image", imageFileName,
-                            RequestBody.create(MEDIA_TYPE_PNG, new File(imagePath)))
-                    .build();
-            URL = ApiEndPoints.ADD_PROJECT;
-
-        }else if(MODE == EDIT_MODE) {
-            if(StringUtils.isBlank(imageFileName)){
-                //Buat parameter input form
-                requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("title", title)
-                        .addFormDataPart("montant", montant)
-                        .addFormDataPart("end_date", end_date)
-                        .addFormDataPart("description", description)
-                        .build();
-            }else{
-                requestBody = new MultipartBody.Builder()
-                        .setType(MultipartBody.FORM)
-                        .addFormDataPart("title", title)
-                        .addFormDataPart("montant", montant)
-                        .addFormDataPart("end_date", end_date)
-                        .addFormDataPart("description", description)
-                        .addFormDataPart("image", imageFileName,
-                                RequestBody.create(MEDIA_TYPE_PNG, new File(imagePath)))
-                        .build();
-            }
-            URL = ApiEndPoints.PROJECTS+"/"+title+"/update";
-        }
-
-        Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
-                .post(requestBody)
-                .build();
-
-        //Handle response dari request
-        client.newCall(request).enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, final IOException e) {
-                AddProject.this.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Log.d("Main Activity", e.getMessage());
-                        Toast.makeText(AddProject.this, e.getMessage(), Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }
-
-            @Override
-            public void onResponse(Call call, final Response response) throws IOException {
-                if (response.isSuccessful()) {
-                    try {
-                        //Finish activity
-                        AddProject.this.runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                APIResponse res =  gson.fromJson(response.body().charStream(), APIResponse.class);
-                                //Jika response success, finish activity
-                                if(StringUtils.equals(res.getStatus(), "success")){
-                                    Toast.makeText(AddProject.this, "Book saved!", Toast.LENGTH_SHORT).show();
-                                    finish();
-                                }else{
-                                    //Tampilkan error jika ada
-                                    Toast.makeText(AddProject.this, "Error: "+res.getMessage(), Toast.LENGTH_SHORT).show();
-                                }
-                            }
-                        });
-                    } catch (JsonSyntaxException e) {
-                        Log.e("MainActivity", "JSON Errors:"+e.getMessage());
-                    } finally {
-                        response.body().close();
-                    }
-
-                } else {
-                    AddProject.this.runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(AddProject.this, "Server error", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }
-            }
-        });
-    }
 }

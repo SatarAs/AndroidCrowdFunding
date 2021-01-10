@@ -19,12 +19,15 @@ import com.google.gson.JsonSyntaxException;
 import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
+import java.util.Date;
 
 import com.devforxkill.androidcrowdfunding.Adapter.*;
 import com.devforxkill.androidcrowdfunding.Config.ApiEndPoints;
 import com.devforxkill.androidcrowdfunding.Models.APIResponse;
 import com.devforxkill.androidcrowdfunding.Models.Project;
 import com.devforxkill.androidcrowdfunding.Models.AmountDon;
+
+import org.w3c.dom.Text;
 
 import butterknife.BindView;
 import okhttp3.Call;
@@ -35,9 +38,11 @@ import okhttp3.Response;
 
 public class DetailActivity extends AppCompatActivity {
     Project editProject;
-    TextView etTitle;
+    @BindView(R.id.title) TextView etTitle;
     TextView etAmount;
     TextView etDescription;
+    TextView etTotal;
+    TextView etEnd_Date;
     Button etButton;
     ImageView etImage;
     OkHttpClient client = new OkHttpClient.Builder()
@@ -47,13 +52,15 @@ public class DetailActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-
         etTitle = findViewById(R.id.title);
         etAmount = findViewById(R.id.amount);
         etDescription = findViewById(R.id.description);
         etButton =  findViewById(R.id.don);
         etImage =  findViewById(R.id.imageP);
-        editProject =  getIntent().getParcelableExtra("book");
+        editProject = (Project) getIntent().getParcelableExtra("book");
+
+        etEnd_Date = findViewById(R.id.end_date_single);
+        etTotal = findViewById(R.id.total);
 
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
@@ -68,17 +75,82 @@ public class DetailActivity extends AppCompatActivity {
         });
         Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(etImage);
         getDons();
-
+        getProject();
+        Log.d("Project",editProject.toString());
     }
 
+
+    private void getProject(){
+        String URL = "";
+
+        URL = ApiEndPoints.DETAIL + editProject.getId();
+        Log.d("URL", URL);
+
+        Request request = new Request.Builder()
+                .url(URL)
+                .get()
+                .build();
+
+        client.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, final IOException e) {
+                Log.d("Error","Error");
+
+                DetailActivity.this.runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d("Main Activity", e.getMessage());
+                        Toast.makeText(DetailActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
+
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, final Response response) throws IOException {
+                Log.d("Good","Good" +new Gson().toJson(response.body()));
+                final Gson gson = new Gson();
+                assert response.body() != null;
+                final Project entity = gson.fromJson(response.body().string(), Project.class);
+                Log.d("APIR", String.valueOf(entity.getClass()));
+                Log.d("Project class",entity.toString());
+
+                if(response.isSuccessful()){
+                    try{
+                        DetailActivity.this.runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if(response.code() == 200){
+                                    Log.d("Log entity", ": "+ entity);
+                                    String title = entity.getTitle();
+                                    String description = entity.getDescription();
+                                    String montant = "Objectif: "+ entity.getMontant() + " €";
+                                    String end_date = entity.getEndDate();
+                                    etTitle.setText(title);
+                                    etDescription.setText(description);
+                                    etAmount.setText(montant);
+                                    etEnd_Date.setText(end_date);
+                                    Log.d("Montant", "Oui" + montant);
+                                }else{
+                                    Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        });
+                    } catch (JsonSyntaxException e){
+
+                    }
+                }
+            }
+        });
+    }
     private void getDons(){
         String URL = "";
 
-        URL = ApiEndPoints.SUMDON + editProject.getId().toString();
+        URL = ApiEndPoints.SUMDON + editProject.getId();
 
 
         Request request = new Request.Builder()
-                .url(URL) //Ingat sesuaikan dengan URL
+                .url(URL)
                 .get()
                 .build();
 
@@ -102,9 +174,9 @@ public class DetailActivity extends AppCompatActivity {
             public void onResponse(Call call, final Response response) throws IOException {
                 Log.d("Good","Good" +new Gson().toJson(response.body()));
                 final Gson gson = new Gson();
+                assert response.body() != null;
                 final AmountDon entity = gson.fromJson(response.body().string(), AmountDon.class);
-
-                //Log.d("APIR", String.valueOf(entity.getTOTAL_AMOUNT()));
+                Log.d("APIR", String.valueOf(entity.getTOTAL_AMOUNT()));
 
                 if (response.isSuccessful()) {
                     try {
@@ -112,10 +184,9 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    /*Integer percent = (int)((entity.getTOTAL_AMOUNT() * 100.0f) / Integer.parseInt(editProject.getMontant()));
-                                    Log.d("PERCENT", "Oui");
-                                    String percentD = Integer.toString(percent) + "%";
-                                    etAmount.setText(percentD);*/
+                                    Integer percent = (int)((entity.getTOTAL_AMOUNT()));
+                                    Log.d("PERCENT", percent.toString());
+                                    etTotal.setText(percent.toString());
                                 }else{
 
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
