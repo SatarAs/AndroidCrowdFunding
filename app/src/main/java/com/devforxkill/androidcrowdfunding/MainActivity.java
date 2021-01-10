@@ -240,6 +240,18 @@ public class MainActivity extends AppCompatActivity {
             return true;
         }
 
+        if(id == R.id.logout){
+            sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
+
+            sharedPreferences
+                    .edit()
+                    .putBoolean(PREFS_AGE,false)
+                    .apply();
+            Intent show = new Intent(this, MainActivity.class);
+            startActivity(show);
+            return true;
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
