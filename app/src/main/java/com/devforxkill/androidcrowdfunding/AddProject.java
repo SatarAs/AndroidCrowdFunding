@@ -52,7 +52,7 @@ import okhttp3.RequestBody;
 import okhttp3.Response;
 
 /**
- * Activity untuk menambahkan dan mengupdate data buku
+ * Activity pour l'ajout d'un nouveau projet
  */
 public class AddProject extends AppCompatActivity {
 
@@ -112,8 +112,8 @@ public class AddProject extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_project);
-        ButterKnife.bind(this); //Bind ButterKnife
 
+        ButterKnife.bind(this);
 
         imagePicker = new ImagePicker(AddProject.this);
         cameraImagePicker = new CameraImagePicker(AddProject.this);
@@ -121,7 +121,6 @@ public class AddProject extends AppCompatActivity {
 
         imagePicker.setImagePickerCallback(callback);
         cameraImagePicker.setImagePickerCallback(callback);
-
 
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -148,7 +147,7 @@ public class AddProject extends AppCompatActivity {
         }
     }
 
-    private void addProject(){
+    private void addProject() {
         Log.d(TAG, "addProject: TEST ADD");
         String title = etTitle.getText().toString();
         String montant = etMontant.getText().toString();
@@ -156,9 +155,9 @@ public class AddProject extends AppCompatActivity {
         String description = etDescription.getText().toString();
         //String picture = imageView.toString();
 
-        if(StringUtils.isEmpty(title)) return;
-        if(StringUtils.isEmpty(montant)) return;
-        if(StringUtils.isEmpty(end_date)) return;
+        if (StringUtils.isEmpty(title)) return;
+        if (StringUtils.isEmpty(montant)) return;
+        if (StringUtils.isEmpty(end_date)) return;
 
         RequestBody requestBody = null;
         String URL = "";
@@ -188,13 +187,13 @@ public class AddProject extends AppCompatActivity {
                 .post(requestBody)
                 .build();
 
-        Intent i = new Intent(this,MainActivity.class);
+        Intent i = new Intent(this, MainActivity.class);
         startActivity(i);
 
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                Log.d("Error","Error");
+                Log.d("Error", "Error");
                 AddProject.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -206,10 +205,10 @@ public class AddProject extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good");
+                Log.d("Good", "Good");
 
                 if (response.isSuccessful()) {
-                    String result= response.body().string();
+                    String result = response.body().string();
                     Log.d("Good", result);
                 }
             }
@@ -252,7 +251,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * onActivityResult untuk menghandle data yang diambil dari camera atau gallery
+     * onActivityResult
      * @param requestCode
      * @param resultCode
      * @param data
@@ -279,7 +278,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Jangan lupa handle reference path gambar agar tidak hilang saat activity restart
+     * onSaveInstanceState
      * @param outState
      */
     @Override
@@ -299,7 +298,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Buat menu SIMPAN di pojok kanan atas
+     * onCreateOptionsMenu
      * @param menu
      * @return
      */
@@ -311,7 +310,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     /**
-     * Handle menu, ketika diklik, panggil method save()
+     * onOptionsItemSelected
      * @param item
      * @return
      */

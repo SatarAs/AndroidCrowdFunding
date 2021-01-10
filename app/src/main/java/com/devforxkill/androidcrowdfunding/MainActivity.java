@@ -50,6 +50,9 @@ import okhttp3.Response;
 
 import static android.support.v7.widget.RecyclerView.VERTICAL;
 
+/**
+ * Activity d'accueil de l'application, qui liste les projets existants
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String PREFS = "PREFS";
     private static final String PREFS_AGE = "PREFS_AGE";
@@ -147,14 +150,13 @@ public class MainActivity extends AppCompatActivity {
 
 
     /**
-     * Get Book from REST-API and populate into RecycleView
+     * Get Projects from REST-API and populate into RecycleView
      */
     private void getBooks(){
         Request request = new Request.Builder()
                 .url(ApiEndPoints.PROJECTS)
                 .build();
 
-        //Handle response dari request
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {

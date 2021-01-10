@@ -6,9 +6,6 @@ import android.view.GestureDetector;
 import android.view.MotionEvent;
 import android.view.View;
 
-/**
- * Class untuk menghandle event click pada RecycleView.
- */
 public class RecyclerItemClickListener implements RecyclerView.OnItemTouchListener {
     public interface OnItemClickListener {
         void onItemClick(View view, int position);

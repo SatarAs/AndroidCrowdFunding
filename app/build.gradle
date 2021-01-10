@@ -1,5 +1,20 @@
 apply plugin: 'com.android.application'
 
+
+sonarqube {
+    properties{
+        property "sonar.host.url", "http://localhost:9000"
+        property "sonar.jdbc.url", "jdbc:mysql://localhost:8889/sonar"
+        property "sonar.jdbc.driverClassName", "com.mysql.jdbc.Driver"
+        property "sonar.jdbc.username", "admin"
+        property "sonar.jdbc.password", "txF8QVGTr46cx5x"
+        property "sonar.projectName", "projet-android"
+        property "sonar.projectKey", "c438dae3bd7fa9e5c89f15cbac22c78949f59c80"
+        property "sonar.language", "kotlin"
+        property "sonar.sources", "src"
+        property "sonar.java.binaries", "build"
+    }
+}
 android {
     compileSdkVersion 26
     /*buildToolsVersion "30.0.2"*/
