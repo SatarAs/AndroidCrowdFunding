@@ -2,6 +2,7 @@ package com.devforxkill.androidcrowdfunding;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
@@ -35,11 +36,15 @@ import okhttp3.Response;
  * Activity pour l'affichage d'un seul projet
  */
 public class DetailActivity extends AppCompatActivity {
+
     private ProgressBar progressBar;
     private int progressStatus = 0;
     private TextView textView;
     private Handler handler = new Handler();
 
+    private static final String PREFS = "PREFS";
+    private static final String PREFS_AGE = "PREFS_AGE";
+    SharedPreferences sharedPreferences;
 
     Project editProject;
     TextView etTitle;
@@ -221,8 +226,23 @@ public class DetailActivity extends AppCompatActivity {
     }
 
     private void update(Project project){
-        Intent intent = new Intent(this, DonActivity.class);
-        intent.putExtra("project", project);
-        startActivity(intent);
+        sharedPreferences = getBaseContext().getSharedPreferences(PREFS, MODE_PRIVATE);
+        if(sharedPreferences.contains(PREFS_AGE)){
+
+            boolean age = sharedPreferences.getBoolean(PREFS_AGE, false);
+            if(age){
+                Log.d("onClikDon","Ok");
+                Log.d("prefs age: ", ""+age);
+                Intent intent = new Intent(this, DonActivity.class);
+                intent.putExtra("project", project);
+                startActivity(intent);
+            }else{
+                Intent intent = new Intent(this, LoginActivity.class);
+                startActivity(intent);
+                Toast.makeText(DetailActivity.this, "Veuillez vous connectez pour faire un don", Toast.LENGTH_SHORT).show();
+            }
+
+        }
+
     }
 }
