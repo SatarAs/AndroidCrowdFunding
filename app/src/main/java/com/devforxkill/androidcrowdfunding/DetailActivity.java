@@ -29,7 +29,7 @@ import okhttp3.Request;
 import okhttp3.Response;
 
 /**
- * Activity pour l'affichage des détails d'un projet
+ * Activity pour l'affichage d'un seul projet
  */
 public class DetailActivity extends AppCompatActivity {
     Project editProject;
@@ -76,7 +76,6 @@ public class DetailActivity extends AppCompatActivity {
         String URL = "";
 
         URL = ApiEndPoints.DETAIL + editProject.getId();
-        Log.d("URL", URL);
 
         Request request = new Request.Builder()
                 .url(URL)
@@ -100,12 +99,11 @@ public class DetailActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good" +new Gson().toJson(response.body()));
+                Log.d("onResponse","In response : " +new Gson().toJson(response.body()));
                 final Gson gson = new Gson();
                 assert response.body() != null;
                 final Project entity = gson.fromJson(response.body().string(), Project.class);
-                Log.d("APIR", String.valueOf(entity.getClass()));
-                Log.d("Project class",entity.toString());
+                Log.d("API Response", String.valueOf(entity.getClass()));
 
                 if(response.isSuccessful()){
                     try{

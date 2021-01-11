@@ -66,7 +66,7 @@ public class DonActivity extends AppCompatActivity {
         if (sharedPreferences.contains(PREFS_ID)) {
 
             id = sharedPreferences.getString(PREFS_ID, null);
-            Log.d("StorageDON", id);
+            Log.d("StorageId", id);
 
 
         }
@@ -76,7 +76,7 @@ public class DonActivity extends AppCompatActivity {
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
-                Log.d("MARCHE","MARCHE");
+                Log.d("onClikDon","Ok");
                 saveDons(view);
 
             }
@@ -127,11 +127,12 @@ public class DonActivity extends AppCompatActivity {
                         DonActivity.this.runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(StringUtils.equals(res.getStatus(), "success")){
+                                if(StringUtils.equals(res.getStatus(), "ok")){
                                     Toast.makeText(DonActivity.this, "Don enregistré!", Toast.LENGTH_SHORT).show();
                                     finish();
                                 }else{
                                     Toast.makeText(DonActivity.this, "Error: "+res.getMessage(), Toast.LENGTH_SHORT).show();
+                                    finish();
                                 }
                             }
                         });

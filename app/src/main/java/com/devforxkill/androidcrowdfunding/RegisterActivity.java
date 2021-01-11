@@ -58,7 +58,7 @@ public class RegisterActivity extends AppCompatActivity {
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Log.d("MARCHE","MARCHE");
+                Log.d("registerClick","Ok");
                 register();
             }
         });
@@ -71,7 +71,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password = etPassword.getText().toString();
         String birthdate = etBirthdate.getText().toString();
 
-        Log.d("TESTE", email + pseudo + password + birthdate);
+        Log.d("userCredentials", email + pseudo + password + birthdate);
 
         if(StringUtils.isEmpty(email)) return;
         if(StringUtils.isEmpty(pseudo)) return;
@@ -103,11 +103,10 @@ public class RegisterActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                Log.d("Error","Error");
                 RegisterActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d("Main Activity", e.getMessage());
+                        Log.d("Register Error", e.getMessage());
                         Toast.makeText(RegisterActivity.this, e.getMessage(), Toast.LENGTH_SHORT).show();
                     }
                 });
@@ -115,11 +114,9 @@ public class RegisterActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("Good","Good");
-
                 if (response.isSuccessful()) {
                     String result= response.body().string();
-                    Log.d("Good", result);
+                    Log.d("registerResponse", result);
                 }
             }
         });

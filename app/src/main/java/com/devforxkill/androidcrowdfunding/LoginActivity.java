@@ -63,7 +63,7 @@ public class LoginActivity extends AppCompatActivity {
         btnAddCover.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
-                Log.d("MARCHE","MARCHE");
+                Log.d("loginClick","Ok");
                 login(view);
 
             }
@@ -99,8 +99,6 @@ public class LoginActivity extends AppCompatActivity {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, final IOException e) {
-                Log.d("Error","Error");
-
                 LoginActivity.this.runOnUiThread(new Runnable() {
                     @Override
                     public void run() {
@@ -113,10 +111,9 @@ public class LoginActivity extends AppCompatActivity {
 
             @Override
             public void onResponse(Call call, final Response response) throws IOException {
-                Log.d("LOGIN","LOGIN IS GOOD" +new Gson().toJson(response.body()));
+                Log.d("responseLogin","Login OK" +new Gson().toJson(response.body()));
                 final Gson gson = new Gson();
                 final APIResponse entity = gson.fromJson(response.body().string(), APIResponse.class);
-                Log.d("APIR",entity.getUser().getEmail());
 
                 if (response.isSuccessful()) {
                     try {
@@ -124,7 +121,7 @@ public class LoginActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    Toast.makeText(LoginActivity.this, "Connexion réussi ! ", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(LoginActivity.this, "Connexion ok ! ", Toast.LENGTH_SHORT).show();
                                     sharedPreferences = getBaseContext().getSharedPreferences("PREFS", MODE_PRIVATE);
 
 

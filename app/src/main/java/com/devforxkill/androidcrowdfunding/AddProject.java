@@ -148,7 +148,7 @@ public class AddProject extends AppCompatActivity {
     }
 
     private void addProject() {
-        Log.d(TAG, "addProject: TEST ADD");
+        Log.d("AddProject", "Dans addProject()");
         String title = etTitle.getText().toString();
         String montant = etMontant.getText().toString();
         String end_date = etEnd_Date.getText().toString();
