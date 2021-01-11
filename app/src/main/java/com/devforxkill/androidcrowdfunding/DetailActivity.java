@@ -61,6 +61,7 @@ public class DetailActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.description);
         etButton =  findViewById(R.id.don);
         etImage = findViewById(R.id.project_pic);
+        etTotal = findViewById(R.id.totaldons);
         editProject = (Project) getIntent().getParcelableExtra("book");
         editProject.setPicture(getIntent().getStringExtra("ImgUrl"));
         etEnd_Date = findViewById(R.id.end_date_single);
@@ -68,10 +69,12 @@ public class DetailActivity extends AppCompatActivity {
         progressBar = findViewById(R.id.total);
         textView = findViewById(R.id.textView);
 
+
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
         etDescription.setText(editProject.getDescription());
         Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(etImage);
+        etTotal.setText(editProject.getMontant());
         etButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
@@ -186,6 +189,7 @@ public class DetailActivity extends AppCompatActivity {
                             public void run() {
                                 if(response.code() == 200){
                                     Integer montantTotal = (entity.getTOTAL_AMOUNT());
+                                    etTotal.setText("Récolté : " + montantTotal + " €");
                                     progressBar.setMax(100);
                                     progressBar.setProgress(montantTotal);
 
