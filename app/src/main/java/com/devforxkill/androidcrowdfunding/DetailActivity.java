@@ -1,13 +1,16 @@
 package com.devforxkill.androidcrowdfunding;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -33,9 +36,16 @@ import okhttp3.Response;
  * Activity pour l'affichage d'un seul projet
  */
 public class DetailActivity extends AppCompatActivity {
+
+    private ProgressBar progressBar;
+    private int progressStatus = 0;
+    private TextView textView;
+    private Handler handler = new Handler();
+
     private static final String PREFS = "PREFS";
     private static final String PREFS_AGE = "PREFS_AGE";
     SharedPreferences sharedPreferences;
+
     Project editProject;
     TextView etTitle;
     TextView etAmount;
@@ -56,15 +66,20 @@ public class DetailActivity extends AppCompatActivity {
         etDescription = findViewById(R.id.description);
         etButton =  findViewById(R.id.don);
         etImage = findViewById(R.id.project_pic);
+        etTotal = findViewById(R.id.totaldons);
         editProject = (Project) getIntent().getParcelableExtra("book");
         editProject.setPicture(getIntent().getStringExtra("ImgUrl"));
         etEnd_Date = findViewById(R.id.end_date_single);
-        etTotal = findViewById(R.id.total);
+
+        progressBar = findViewById(R.id.total);
+        textView = findViewById(R.id.textView);
+
 
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
         etDescription.setText(editProject.getDescription());
         Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(etImage);
+        etTotal.setText(editProject.getMontant());
         etButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
@@ -126,6 +141,8 @@ public class DetailActivity extends AppCompatActivity {
                                     etAmount.setText(montant);
                                     etEnd_Date.setText("Date de fin: 25/02/2021");
                                     Log.d("Montant", "Oui" + montant);
+
+
                                 }else{
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
                                 }
@@ -176,8 +193,11 @@ public class DetailActivity extends AppCompatActivity {
                             @Override
                             public void run() {
                                 if(response.code() == 200){
-                                    Integer montantTotal = (int)((entity.getTOTAL_AMOUNT()));
-                                    etTotal.setText("Récolté : " + montantTotal.toString()+ " €");
+                                    Integer montantTotal = (entity.getTOTAL_AMOUNT());
+                                    etTotal.setText("Récolté : " + montantTotal + " €");
+                                    progressBar.setMax(100);
+                                    progressBar.setProgress(montantTotal);
+
                                 }else{
 
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
