@@ -144,6 +144,7 @@ public class MainActivity extends AppCompatActivity {
     private void update(Project project){
         Intent intent = new Intent(this, DetailActivity.class);
         intent.putExtra("book", project);
+        intent.putExtra("ImgUrl", project.getPicture());
         startActivity(intent);
     }
 

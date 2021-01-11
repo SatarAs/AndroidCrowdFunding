@@ -53,13 +53,14 @@ public class DetailActivity extends AppCompatActivity {
         etButton =  findViewById(R.id.don);
         etImage = findViewById(R.id.project_pic);
         editProject = (Project) getIntent().getParcelableExtra("book");
-
+        editProject.setPicture(getIntent().getStringExtra("ImgUrl"));
         etEnd_Date = findViewById(R.id.end_date_single);
         etTotal = findViewById(R.id.total);
 
         etTitle.setText(editProject.getTitle());
         etAmount.setText(editProject.getMontant());
         etDescription.setText(editProject.getDescription());
+        Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(etImage);
         etButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
