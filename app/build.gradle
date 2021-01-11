@@ -9,7 +9,7 @@ sonarqube {
         property "sonar.jdbc.username", "admin"
         property "sonar.jdbc.password", "txF8QVGTr46cx5x"
         property "sonar.projectName", "projet-android"
-        property "sonar.projectKey", "c438dae3bd7fa9e5c89f15cbac22c78949f59c80"
+        property "sonar.projectKey", "f0be531aaf4c1a9c183a0cee445bd4875018cbf1"
         property "sonar.language", "kotlin"
         property "sonar.sources", "src"
         property "sonar.java.binaries", "build"
@@ -42,9 +42,18 @@ dependencies {
     implementation 'com.android.support:design:26.1.0'
     implementation 'com.android.support:support-annotations:26.1.0'
     implementation 'android.arch.lifecycle:extensions:1.1.1'
-    testImplementation 'junit:junit:4.12'
-    androidTestImplementation 'com.android.support.test:runner:1.0.1'
-    androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
+    testImplementation 'junit:junit:4.13'
+    testImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    testImplementation 'androidx.test:runner:1.3.0'
+    testImplementation 'androidx.test:rules:1.3.0'
+    testImplementation 'androidx.test.ext:junit:1.1.2'
+    testImplementation 'org.roboelectric:4.0'
+    testImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
+    androidTestImplementation 'androidx.test:runner:1.3.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
+    androidTestImplementation 'androidx.test:rules:1.3.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-intents:3.3.0'
     compile 'com.squareup.okhttp3:okhttp:3.10.0'
     compile 'com.google.code.gson:gson:2.8.2'
     implementation 'com.squareup.picasso:picasso:2.71828'
