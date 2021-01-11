@@ -16,31 +16,33 @@
 
             <TextView
                 android:id="@+id/title"
-                android:layout_width="wrap_content"
+                android:layout_width="326dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="170dp"
-                android:layout_marginLeft="170dp"
+                android:layout_marginStart="40dp"
+                android:layout_marginLeft="40dp"
                 android:layout_marginTop="16dp"
-                android:layout_marginEnd="190dp"
+                android:layout_marginEnd="40dp"
                 android:layout_marginRight="190dp"
                 android:gravity="center"
-                android:textSize="18sp"
+                android:text="title"
+                android:textSize="30sp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.047"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageP" />
+                app:layout_constraintTop_toBottomOf="@+id/project_pic" />
 
             <TextView
                 android:id="@+id/end_date_single"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="184dp"
+                android:text="Date de fin : 25/02/2021"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.047"
+                app:layout_constraintHorizontal_bias="0.493"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageP" />
+                app:layout_constraintTop_toBottomOf="@+id/project_pic" />
 
             <ImageView
-                android:id="@+id/imageP"
+                android:id="@+id/project_pic"
                 android:layout_width="407dp"
                 android:layout_height="217dp"
                 android:layout_marginStart="2dp"
@@ -50,6 +52,7 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
+                app:srcCompat="@android:drawable/ic_menu_gallery"
                 tools:srcCompat="@tools:sample/avatars" />
 
             <TextView
@@ -58,21 +61,25 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="175dp"
                 android:layout_marginLeft="175dp"
-                android:layout_marginTop="48dp"
-                android:layout_marginEnd="178dp"
+                android:layout_marginTop="136dp"
+                android:layout_marginEnd="2dp"
                 android:layout_marginRight="178dp"
+                android:text="amount"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.225"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/title" />
+                app:layout_constraintTop_toBottomOf="@+id/project_pic" />
 
             <TextView
                 android:id="@+id/total"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="136dp"
+                android:text="total"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.047"
+                app:layout_constraintHorizontal_bias="0.323"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/imageP" />
+                app:layout_constraintTop_toBottomOf="@+id/project_pic" />
 
             <Button
                 android:id="@+id/don"
@@ -80,11 +87,12 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="160dp"
                 android:layout_marginLeft="160dp"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="72dp"
                 android:layout_marginEnd="163dp"
                 android:layout_marginRight="163dp"
                 android:text="Donate"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/description" />
 
@@ -94,13 +102,15 @@
                 android:layout_height="127dp"
                 android:layout_marginStart="42dp"
                 android:layout_marginLeft="42dp"
-                android:layout_marginTop="41dp"
+                android:layout_marginTop="268dp"
                 android:layout_marginEnd="43dp"
                 android:layout_marginRight="43dp"
                 android:gravity="center"
+                android:text="description"
                 app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/amount" />
+                app:layout_constraintTop_toBottomOf="@+id/project_pic" />
         </android.support.constraint.ConstraintLayout>
     </ScrollView>
 

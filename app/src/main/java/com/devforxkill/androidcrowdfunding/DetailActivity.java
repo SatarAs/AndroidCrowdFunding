@@ -2,12 +2,10 @@ package com.devforxkill.androidcrowdfunding;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.TextInputEditText;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -21,15 +19,9 @@ import com.squareup.picasso.Picasso;
 import java.io.IOException;
 import java.util.Date;
 
-import com.devforxkill.androidcrowdfunding.Adapter.*;
-import com.devforxkill.androidcrowdfunding.Config.ApiEndPoints;
-import com.devforxkill.androidcrowdfunding.Models.APIResponse;
 import com.devforxkill.androidcrowdfunding.Models.Project;
 import com.devforxkill.androidcrowdfunding.Models.AmountDon;
 
-import org.w3c.dom.Text;
-
-import butterknife.BindView;
 import okhttp3.Call;
 import okhttp3.Callback;
 import okhttp3.OkHttpClient;
@@ -59,7 +51,7 @@ public class DetailActivity extends AppCompatActivity {
         etAmount = findViewById(R.id.amount);
         etDescription = findViewById(R.id.description);
         etButton =  findViewById(R.id.don);
-        etImage =  findViewById(R.id.imageP);
+        etImage = findViewById(R.id.project_pic);
         editProject = (Project) getIntent().getParcelableExtra("book");
 
         etEnd_Date = findViewById(R.id.end_date_single);
@@ -71,15 +63,12 @@ public class DetailActivity extends AppCompatActivity {
         etButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view)  {
-                Log.d("MARCHE","MARCHE");
                 update(editProject);
-
             }
         });
+        getProject();
         Picasso.get().load(ApiEndPoints.BASE + editProject.getPicture()).into(etImage);
         getDons();
-        getProject();
-        Log.d("Project",editProject.toString());
     }
 
 
@@ -128,11 +117,11 @@ public class DetailActivity extends AppCompatActivity {
                                     String title = entity.getTitle();
                                     String description = entity.getDescription();
                                     String montant = "Objectif: "+ entity.getMontant() + " €";
-                                    String end_date = entity.getEndDate();
+                                    String endDate = entity.getEndDate();
                                     etTitle.setText(title);
                                     etDescription.setText(description);
                                     etAmount.setText(montant);
-                                    etEnd_Date.setText(end_date);
+                                    etEnd_Date.setText("Date de fin: 25/02/2021");
                                     Log.d("Montant", "Oui" + montant);
                                 }else{
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
@@ -185,7 +174,7 @@ public class DetailActivity extends AppCompatActivity {
                             public void run() {
                                 if(response.code() == 200){
                                     Integer montantTotal = (int)((entity.getTOTAL_AMOUNT()));
-                                    etTotal.setText(montantTotal.toString());
+                                    etTotal.setText("Récolté : " + montantTotal.toString()+ " €");
                                 }else{
 
                                     Toast.makeText(DetailActivity.this, "Error: "+response.code(), Toast.LENGTH_SHORT).show();
